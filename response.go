@@ -458,7 +458,9 @@ func (r *Response) getJSON(opts ...ContentOpts) interface{} {
 	}
 
 	var value interface{}
-	if err := json.Unmarshal(r.content, &value); err != nil {
+	decoder := json.NewDecoder(bytes.NewReader(r.content))
+	decoder.UseNumber()
+	if err := decoder.Decode(&value); err != nil {
 		r.chain.fail(err.Error())
 		return nil
 	}
@@ -511,7 +513,9 @@ func (r *Response) getJSONP(callback string, opts ...ContentOpts) interface{} {
 	}
 
 	var value interface{}
-	if err := json.Unmarshal(m[2], &value); err != nil {
+	decoder := json.NewDecoder(bytes.NewReader(m[2]))
+	decoder.UseNumber()
+	if err := decoder.Decode(&value); err != nil {
 		r.chain.fail(err.Error())
 		return nil
 	}
